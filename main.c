@@ -36,16 +36,17 @@ struct Ticket
     char* desc;
     float priceUnit;
     float priceTotal;
-    int cant;
+    float cant;
 };
 
 int main()
 {
-    int opc,i,flag,globalStock,numProduct,cantProduct,limitSellProduct;
-    float totalTicket=0;
+    int opc,opc2,i,flagMain,flag2,flag3,globalStock,numProduct;
+    int limitSellProduct,numbOfArticlesToTicket;
+    float totalTicket,cantProduct =0;
     globalStock=DEFAULT_P1+DEFAULT_P2+DEFAULT_P3+DEFAULT_P4+DEFAULT_P5;
-    struct Ticket ticket[globalStock];
     struct Product pdcto[LIMIT_STORE_SIZE];
+    struct Ticket ticket[globalStock];
 
     pdcto[0].name="Plakton";
     pdcto[0].desc="Imported 20gr";
@@ -74,7 +75,7 @@ int main()
 
     do
     {
-        flag=0;
+        flagMain=0;
         printf("\t\tG R O C E R Y     S T O R E\n\n");
         printf("- - - - - - - - - - - - -\n");
         printf("\tMain Menu\n\n");
@@ -110,63 +111,176 @@ int main()
             clear_screen();
             break;
         case 2:
-            flag=0;
+//----------------------TICKET MENU MAKE ---------------------------------------------------------
+            flag2=0;
             do
             {
-                printf("S t o r e   S e l l   I n i t\n\n");
+                printf("S e l l   I n i t\n");
+                printf("- - - - - - - - - - - - -\n\n");
+                printf("- - - - - - - - - - - - -\n");
+                printf("1.-Add products to ticket\n");
+                printf("- - - - - - - - - - - - -\n");
+                printf("2.-View current ticket\n");
+                printf("- - - - - - - - - - - - -\n");
+                printf("3.-Close ticket\n");
+                printf("- - - - - - - - - - - - -\n");
+                printf("4.-Exit to main menu\n");
+                printf("- - - - - - - - - - - - -\n");
+                printf("0.-Reset ticket to 0 products\n\n\n opc?:");
+                scanf("%d",&opc2);
+                clear_screen();
 
-                for(i=0; i<LIMIT_STORE_SIZE; i++)//LIST PRODUCT PRINT ---------------------------
+                switch (opc2)
                 {
-                    printf("- - - - - - - - - - - - - - - \n");
-                    printf("\tPRODUCT # %d\n",i+1);
-                    printf("Name: %s \n",pdcto[i].name);
-                    printf("Desc: %s \n",pdcto[i].desc);
-                    printf("Price: %.2f \n",pdcto[i].price);
-                    printf("Stock: %d\n",pdcto[i].cantStock);
-                    printf("- - - - - - - - - - - - - - - \n");
-                }
-                printf("- - - - - - - - - - - - - - - \n");
-                printf("\tYou can buy this max. of products - > %d\n",globalStock);
-                printf("- - - - - - - - - - - - - - - \n");
-
-                printf("Num. of product to add to Ticket ?\n:");
-                scanf("%d",&numProduct);
-                numProduct--;
-
-
-                if(numProduct >= 0 && numProduct < LIMIT_STORE_SIZE)
-                {
-
-                    cantProduct=0;
-                    limitSellProduct=pdcto[numProduct].cantStock;
-                    printf("How much?\n of -> %s <-\n",pdcto[numProduct].name);
-                    printf("Available = %d\n:",pdcto[numProduct].cantStock);
-                    scanf("%d",&cantProduct);
-
-                    if (cantProduct>0 && cantProduct<=limitSellProduct)
+                case 0:
+                    for (i=0 ; i<numbOfArticlesToTicket ; i++)
                     {
-                        printf("Your are select %s and you",pdcto[numProduct].name);
-                        printf("choice  buy %d\n",cantProduct);
-                        //FINAL PART !!
-                        clear_screen();
-                        flag=1;
-                        break;
-
+                        ticket[i].name ="empty";
+                        ticket[i].desc ="empty";
+                        ticket[i].priceUnit=0;
+                        ticket[i].priceTotal=0;
+                        ticket[i].cant=0;
                     }
-                    else printf("Error, entry no valid !\n");
+                    printf("R E S T O R E  - - - -  C O M P L E T E \n");
                     clear_screen();
 
+//              ----------------------------------------------------------RESTORE ALL TICKET------
+                    break;
+                case 1:
 
-                }// IF TO CONTROL NUM OF PRODUCTS ITS OK------------------------------------------
+                    printf("T i c k e t   I n i t\n\n");
+                    printf("- - - - - - - - - - - - - - - \n");
+//                  printf("\tYou can buy this max. of products - > %d\n",globalStock);
+                    printf("Number of articles to selling ?\n");
+                    scanf("%d",&numbOfArticlesToTicket); //PENDING VALIDATE RANGE-------------!!!!
+                    //INIT TICKET DEFAULT-----------------------------------------------------
+                    for (i=0 ; i<numbOfArticlesToTicket ; i++)
+                    {
+                        ticket[i].name ="empty";
+                        ticket[i].desc ="empty";
+                        ticket[i].priceUnit=0;
+                        ticket[i].priceTotal=0;
+                        ticket[i].cant=0;
+                    }
+                    //INIT TICKET DEFAULT-----------------------------------------------------
+                    flag3=0;
+                    while (flag3<numbOfArticlesToTicket)
+                    {
+                        printf("P R O D U C T   AVAILABLE\n\n");
+                        for(i=0; i<LIMIT_STORE_SIZE; i++)//LIST PRODUCT PRINT --------------------
+                        {
+                            printf("\n- - - - - - - - - - - - - - - \n");
+                            printf("\tPRODUCT # %d\n",i+1);
+                            printf("Name: %s \n",pdcto[i].name);
+                            printf("Desc: %s \n",pdcto[i].desc);
+                            printf("Price: %.2f \n",pdcto[i].price);
+                            printf("Stock: %d\n",pdcto[i].cantStock);
+                            printf("- - - - - - - - - - - - - - - \n");
+                        }
+                        printf("\n- - - - - - - - - - - - - - - \n");
+                        printf("Num. of product to select and add to ticket ?\n:");
+                        scanf("%d",&numProduct);
+                        numProduct--;
 
-                else printf("ERROR X !!! \n Try Again...!!!\n");
-                clear_screen();
-                flag=0;
+                        if(numProduct >= 0 && numProduct < LIMIT_STORE_SIZE)
+                        {
+                            limitSellProduct=pdcto[numProduct].cantStock;
+
+                            printf("\nHow much?\n of -> %s <-\n",pdcto[numProduct].name);
+                            printf("Available = %d\n:",pdcto[numProduct].cantStock);
+                            scanf("%f",&cantProduct);
+
+                            if (cantProduct>0 && cantProduct<=limitSellProduct)
+                            {
+                                printf("\nYour are select %s and you",pdcto[numProduct].name);
+                                printf("choice  buy %.2f\n",cantProduct);
+                                printf("Price unit ->%.2f\n",pdcto[numProduct].price);
+
+
+                                ticket[flag3].name = pdcto[numProduct].name;
+                                ticket[flag3].desc = pdcto[numProduct].desc;
+                                ticket[flag3].cant = cantProduct;
+                                ticket[flag3].priceUnit = pdcto[numProduct].price;
+                                ticket[flag3].priceTotal = pdcto[numProduct].price*cantProduct;
+                                totalTicket+=ticket[flag3].priceTotal;
+
+                            }
+                            else
+                                printf("Error, entry no valid !\n");
+                            clear_screen();
+                        }// IF TO CONTROL NUM OF PRODUCTS ITS OK---------------------------------
+
+                        else
+                        {
+                            printf("ERROR X !!! \n Try Again...!!!\n");
+                            clear_screen();
+                            flag2=0;
+                        }
+                        flag3++;
+                    } //WHILE TO CONTROL TICKET WRITE---------------------------------------------
+
+                    clear_screen();
+                    flag2=0;
+                    break;
+
+                case 2:
+                    printf("V i e w    c u r r e n t    t i c k e t \n");
+                    printf("- - - - - - - - - - - - - - - \n\n");
+//Show current ticket-----------------------------------------------------------------------------
+                    for(i=0; i<numbOfArticlesToTicket; i++)
+                    {
+                        printf("- - - - - - - - - - - - - - - \n");
+                        printf("Product: %s\n",ticket[i].name);
+                        printf("Description: %s\n",ticket[i].desc);
+                        printf("Quantity : %.2f\n",ticket[i].cant);
+                        printf("Unit price : %2.f\n",ticket[i].priceUnit);
+                        printf("Total : %2.f\n",ticket[i].priceTotal);
+                        printf("- - - - - - - - - - - - - - - \n");
+                    }
+                    system("pause");
+                    clear_screen();
+                    break;
+
+                case 3:
+//                  ---------------------------------------------------C l o s i n g   t i c k e t
+                    printf("- - - - - - - - - - - - - - - \n");
+                    printf("\tC l o s i n g   t i c k e t !!\n");
+                    printf("- - - - - - - - - - - - - - - \n\n");
+                    printf("Total products -> %d", numbOfArticlesToTicket);
+                    printf("- - - - - - - - - - - - - - - \n");
+                    printf("Total Price -> %.2f",totalTicket);
+                    printf("- - - - - - - - - - - - - - - \n");
+                    printf("* * * T i c k e t * * *\n\n");
+
+                    for(i=0; i<numbOfArticlesToTicket; i++)
+                    {
+                        printf("- - - - - - - - - - - - - - - \n");
+                        printf("Product: %s\n",ticket[i].name);
+                        printf("Description: %s\n",ticket[i].desc);
+                        printf("Quantity : %.2f\n",ticket[i].cant);
+                        printf("Unit price : %2.f\n",ticket[i].priceUnit);
+                        printf("Total : %2.f\n",ticket[i].priceTotal);
+                        printf("- - - - - - - - - - - - - - - \n");
+                    }
+                    break;
+
+                case 4:
+                    printf("Closing ticket menu...\n");
+                    clear_screen();
+                    flag2=1;
+                    break;
+                default:
+                    printf("* * *ERROR X !!! , Try again.!! * * * \n\n");
+                    clear_screen();
+                    break;
+
+                }
 
             }
-            while(flag!=1);
-            break;
 
+            while(flag2!=1);
+            break;
+//------------------------------------------------F I N I S H _ _ _ _ _  T I C K E T_ _ _ _P A R T
         case 3:
             printf("\tS h o w     S t o r a g e\n\n");
             for(i=0; i<LIMIT_STORE_SIZE; i++)
@@ -233,7 +347,7 @@ int main()
 
             break;
         case 5 :
-            flag=1;
+            flagMain=1;
             printf("C l o s i n g   s t o r e,   b y e !\n");
             clear_screen();
             break;
@@ -241,12 +355,12 @@ int main()
         default:
             printf("An ocurred a problem, try again !\n");
             clear_screen();
-            flag=0;
+            flagMain=0;
             break;
         }
 
     }
-    while(flag!=1);
+    while(flagMain!=1);
 
     return 0;
 }
